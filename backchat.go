@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/googollee/go-socket.io"
@@ -37,6 +38,12 @@ func chat(server *socketio.Server) {
 
 	for {
 		for {
+			if server.Count() == 0 {
+				time.Sleep(1 * time.Second)
+
+				continue
+			}
+
 			answer, err = alice.Ask(answer)
 
 			if err != nil {
@@ -57,6 +64,12 @@ func chat(server *socketio.Server) {
 		time.Sleep((time.Duration(len(answer)*100) * time.Millisecond) + time.Second)
 
 		for {
+			if server.Count() == 0 {
+				time.Sleep(1 * time.Second)
+
+				continue
+			}
+
 			answer, err = bob.Ask(answer)
 
 			if err != nil {
@@ -101,5 +114,5 @@ func main() {
 	http.HandleFunc("/", index)
 	http.Handle("/socket.io/", server)
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":"+os.Args[1], nil))
 }
