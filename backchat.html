@@ -1,0 +1,52 @@
+<html>
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.2/socket.io.min.js"></script>
+		<script src='https://code.responsivevoice.org/responsivevoice.js'></script>
+		<script>
+			function addToChat(name, msg) {
+				console.log(name + ":", msg)
+
+				var msgDiv = $("<div>")
+				var nameSpan = $("<span>")
+				var msgSpan = $("<span>")
+
+				if (name == "Alice") {
+					nameSpan.css("color", "blue")
+
+					responsiveVoice.speak(msg, "UK English Female")
+				} else if (name == "Bob") {
+					nameSpan.css("color", "green")
+
+					responsiveVoice.speak(msg, "UK English Male")
+				}
+
+				nameSpan.css("width", "100px")
+				nameSpan.css("display", "inline-block")
+				nameSpan.text(name)
+				msgSpan.text(msg)
+
+				msgDiv.hide()
+				msgDiv.append(nameSpan)
+				msgDiv.append(msgSpan)
+
+				$("body").prepend("<hr>")
+				$("body").prepend(msgDiv)
+
+				msgDiv.show("slow")
+			}
+
+  			var socket = io();
+
+			socket.on("Alice", function(msg) {
+				addToChat("Alice", msg)
+			})
+
+			socket.on("Bob", function(msg) {
+				addToChat("Bob", msg)
+			})
+		</script>
+	</head>
+	<body>
+	</body>
+</html>
